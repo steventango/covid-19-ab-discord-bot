@@ -19,7 +19,7 @@ async function getData() {
 async function getLocationsData() {
 	var data = await getData();
 	if (typeof data !== "string") {
-		var locationsData = data[0].children[1];
+		var locationsData = data[0].children[2];
 		var LocationsData = {};
 		Array.from(locationsData.children).forEach(row => {
 			LocationsData[row.children[0].textContent] = [Number.parseInt(row.children[1].textContent.replace(/,/g, '')), Number.parseInt(row.children[2].textContent.replace(/,/g, ''))];
@@ -62,13 +62,9 @@ async function getTestingData() {
 		var population_M = 4.371;
 
 		var date = (new Date(testingData.children[0].children[0].textContent.match(/Completed tests \(as of (.+)\)/)[1] + " 2020")).getTime() + 2.16e7;
-		var negatives = Number.parseInt(testingData.children[0].children[1].textContent.replace(/,/g, ''));
-		var positives = Number.parseInt(testingData.children[0].children[2].textContent.replace(/,/g, ''));
-		var total = negatives + positives;
+		var total = Number.parseInt(testingData.children[0].children[1].textContent.replace(/,/g, ''));
 		return {
 			date: date,
-			negatives: negatives,
-			positives: positives,
 			total: total,
 			percapita: Math.floor(total / population_M)
 		}
@@ -86,9 +82,7 @@ async function getTestingEmbed(arg) {
 			.setURL('https://www.alberta.ca/covid-19-alberta-statistics.aspx')
 			.setDescription('Alberta is testing for COVID-19. We are acting out of an excess of caution even when the likelihood of exposure is low.')
 			.addFields(
-				{ name: 'Negative', value: data.negatives, inline: true },
-				{ name: 'Positive', value: data.positives, inline: true },
-				{ name: 'Total', value: data.total, inline: true },
+				{ name: 'Completed tests', value: data.total, inline: true },
 			)
 			.addField('Per capita testing', data.percapita + " tests per million people")
 			.setTimestamp(data.date)
