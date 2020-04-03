@@ -4,13 +4,17 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const { document } = (new JSDOM(`...`)).window;
 
-async function getData() {
+async function getData(text_type=false) {
 	var data = await fetch("https://cors-anywhere.herokuapp.com/https://www.alberta.ca/covid-19-alberta-data.aspx", { headers: { origin: 'steventang.tk' } })
 	if (data.status === 200) {
 		var text = await data.text()
 		var html = document.createElement('html');
 		html.innerHTML = text;
-		return html.querySelectorAll('table');
+		if (text_type) {
+			return [text];
+		} else {
+			return html.querySelectorAll('table');
+		}
 	} else {
 		return "Network Error: " + data.status;
 	}
@@ -55,6 +59,35 @@ async function getLocationsEmbed() {
 	}
 }
 
+async function getRecoveriesData() {
+	var data = await getData(true);
+	if (typeof data !== "string") {
+		var recoveriesData = data[0].match(/As of (.+), (\d+) people in Alberta have recovered from COVID-19./);
+		console.log('A')
+		return {
+			recoveries_text: recoveriesData[0],
+			date: (new Date(recoveriesData[1] + ' 2020')).getTime() + 2.16e7
+		};
+	} else {
+		return data;
+	}
+}
+
+async function getRecoveriesEmbed() {
+	var data = await getRecoveriesData();
+	if (typeof data !== "string") {
+		console.log('B')
+		return new Discord.MessageEmbed()
+			.setColor('#00aad2')
+			.setTitle('Recoveries in Alberta')
+			.setURL('https://www.alberta.ca/covid-19-alberta-data.aspx')
+			.setDescription(data.recoveries_text)
+			.setTimestamp(data.date)
+	} else {
+		return data;
+	}
+}
+
 async function getTestingData() {
 	var data = await getData();
 	if (typeof data !== "string") {
@@ -73,7 +106,7 @@ async function getTestingData() {
 	}
 }
 
-async function getTestingEmbed(arg) {
+async function getTestingEmbed() {
 	var data = await getTestingData();
 	if (typeof data !== "string") {
 		return new Discord.MessageEmbed()
@@ -91,5 +124,6 @@ async function getTestingEmbed(arg) {
 	}
 }
 
-module.exports.getTestingEmbed = getTestingEmbed;
 module.exports.getLocationsEmbed = getLocationsEmbed;
+module.exports.getRecoveriesEmbed = getRecoveriesEmbed;
+module.exports.getTestingEmbed = getTestingEmbed;
