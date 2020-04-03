@@ -14,7 +14,7 @@ client.on('message', async function (message) {
     if (message.content.substring(0, 1) == '!') {
         var args = message.content.substring(1).split(' ');
         var cmd = args[0];
-       if (['help', 'info', 'information', 'cases', 'locations', 'testing', 'stats', 'statistics'].indexOf(cmd) > -1) {
+       if (['help', 'info', 'information', 'cases', 'locations', 'recovery', 'recoveries', 'stats', 'statistics', 'testing'].indexOf(cmd) > -1) {
         args = args.splice(1);
         message.channel.startTyping();
         switch(cmd) {
@@ -25,6 +25,7 @@ client.on('message', async function (message) {
                 .addFields(
                     { name: '!info / !information', value: 'hyperlink to official website'},
                     { name: '!cases / !locations', value: 'view number of cases and their locations'},
+                    { name: '!recovery / !recoveries', value: 'overview of recoveries in Alberta'},
                     { name: '!stats / !statistics', value: 'hyperlink to official statistics website'},
                     { name: '!testing', value: 'overview of testing in Alberta'}
                 ));
@@ -44,6 +45,10 @@ client.on('message', async function (message) {
                 break;
             case 'testing':
                 message.channel.send( await api.getTestingEmbed());
+                break;
+            case 'recovery':
+            case 'recoveries':
+                message.channel.send( await api.getRecoveriesEmbed());
                 break;
             case 'stats':
             case 'statistics':
