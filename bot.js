@@ -14,7 +14,7 @@ client.on('message', async function (message) {
     if (message.content.substring(0, 1) == '!') {
         var args = message.content.substring(1).split(' ');
         var cmd = args[0];
-       if (['help', 'info', 'information', 'cases', 'locations', 'recovery', 'recoveries', 'stats', 'statistics', 'testing'].indexOf(cmd) > -1) {
+       if (['help', 'info', 'information', 'cases', 'characteristics', 'locations', 'recovery', 'recoveries', 'stats', 'statistics', 'testing'].indexOf(cmd) > -1) {
         args = args.splice(1);
         message.channel.startTyping();
         switch(cmd) {
@@ -29,6 +29,27 @@ client.on('message', async function (message) {
                     { name: '!stats / !statistics', value: 'hyperlink to official statistics website'},
                     { name: '!testing', value: 'overview of testing in Alberta'}
                 ));
+                break;
+            case 'characteristics':
+                const characteristicsEmbed = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setTitle('Some title')
+                    .setURL('https://discord.js.org/')
+                    .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
+                    .setDescription('Some description here')
+                    .setThumbnail('https://i.imgur.com/wSTFkRM.png')
+                    .addFields(
+                        { name: 'Regular field title', value: 'Some value here' },
+                        { name: '\u200B', value: '\u200B' },
+                        { name: 'Inline field title', value: 'Some value here', inline: true },
+                        { name: 'Inline field title', value: 'Some value here', inline: true },
+                    )
+                    .addField('Inline field title', 'Some value here', true)
+                    .setImage(await api.characteristics())
+                    .setTimestamp()
+                    .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
+
+                message.channel.send(characteristicsEmbed);
                 break;
             case 'info':
             case 'information':
