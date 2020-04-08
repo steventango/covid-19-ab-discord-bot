@@ -91,13 +91,10 @@ async function getRecoveriesEmbed() {
 async function getTestingData() {
 	var data = await getData();
 	if (typeof data !== "string") {
-		var testingData = data[1].children[1];
 		var population_M = 4.371;
 
-		var date = (new Date(testingData.children[0].children[0].textContent.match(/Completed tests \(as of (.+)\)/)[1] + " 2020")).getTime() + 2.16e7;
-		var total = Number.parseInt(testingData.children[0].children[1].textContent.replace(/,/g, ''));
+		var total = data[0].children[2].children[1].children[4];
 		return {
-			date: date,
 			total: total,
 			percapita: Math.floor(total / population_M)
 		}
@@ -118,7 +115,7 @@ async function getTestingEmbed() {
 				{ name: 'Completed tests', value: data.total, inline: true },
 			)
 			.addField('Per capita testing', data.percapita + " tests per million people")
-			.setTimestamp(data.date)
+			.setTimestamp()
 	} else {
 		return data;
 	}
