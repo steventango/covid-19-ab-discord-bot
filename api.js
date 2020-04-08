@@ -93,7 +93,7 @@ async function getTestingData() {
 	if (typeof data !== "string") {
 		var population_M = 4.371;
 
-		var total = data[0].children[2].children[1].children[4];
+		var total = Number.parseInt(data[0].children[2].children[1].children[4].textContent.replace(',', ''));
 		return {
 			total: total,
 			percapita: Math.floor(total / population_M)
